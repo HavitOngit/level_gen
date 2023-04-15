@@ -2,16 +2,16 @@ from ursina import *
 app = Ursina()
 
 from ursina.prefabs.platformer_controller_2d import PlatformerController2d
-player = PlatformerController2d(walk_speed=100, x=10, y=100, z=.01, scale_x=10, scale_y=10, max_jumps=10, jump_height=10)
+player = PlatformerController2d(walk_speed=100, x=1000, y=1000, z=.01, scale_x=25, scale_y=25, max_jumps=10, jump_height=50, jump_duretion=1)
 
 ground = Entity(model='quad', scale_x=10, collider='box', color=color.black)
 
 
 quad = load_model('quad', use_deepcopy=True)
 
-bg = Entity(model='quad', position=(700, 100, 1), scale=(2024, 1200), texture='lev_1_ver_1color.png')
-
 level_parent = Entity(model=Mesh(vertices=[], uvs=[]), texture='white_cube')
+bg = Entity(model='quad', position=(847, 599, 1), scale=(2090, 1236), texture='lev_1_ver_1color.png')
+
 def make_level(texture):
     # destroy every child of the level parent.
     # This doesn't do anything the first time the level is generated, but if we want to update it several times
@@ -48,16 +48,26 @@ make_level(load_texture('lev_ver_1'))   # generate the level
 
 camera.orthographic = True
 camera.position = (0, 0)
-camera.fov = 700
+camera.fov = 800
 
 
-#camera.add_script(SmoothFollow(target=player, offset=[0, 5, -30],speed=4))
+camera.add_script(SmoothFollow(target=player, offset=[0, 5, -30],speed=4))
 player.traverse_target = level_parent
 enemy = Entity(model='cube', collider='box', color=color.red, position=(16,5,-.1))
 def update():
     if player.intersects(enemy).hit:
         print('die')
         player.position = player.start_position
+    if held_keys['8']:
+        bg.y +=1
+    if held_keys['2']:
+        bg.y -=1
+    if held_keys['4']:
+        bg.x -=1
+    if held_keys['6']:
+        bg.x +=1
+
+    print(bg.position)
 
 EditorCamera()
 app.run()
