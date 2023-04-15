@@ -2,13 +2,14 @@ from ursina import *
 app = Ursina()
 
 from ursina.prefabs.platformer_controller_2d import PlatformerController2d
-player = PlatformerController2d(y=1, z=.01, scale_y=1, max_jumps=4)
+player = PlatformerController2d(walk_speed=100, x=10, y=100, z=.01, scale_x=10, scale_y=10, max_jumps=10, jump_height=10)
 
 ground = Entity(model='quad', scale_x=10, collider='box', color=color.black)
 
 
 quad = load_model('quad', use_deepcopy=True)
 
+bg = Entity(model='quad', position=(700, 100, 1), scale=(2024, 1200), texture='lev_1_ver_1color.png')
 
 level_parent = Entity(model=Mesh(vertices=[], uvs=[]), texture='white_cube')
 def make_level(texture):
@@ -37,20 +38,20 @@ def make_level(texture):
                 collider = None
 
             # If it's green, we'll place the player there. Store this in player.start_position so we can reset the plater position later.
-            if col == color.green:
-                player.start_position = (x, y)
-                player.position = player.start_position
+            #if col == color.green:
+                #player.start_position = (x, y)
+                #player.position = player.start_position
     print('cordinates are:\n', pos)
     level_parent.model.generate()
 
-make_level(load_texture('level_01'))   # generate the level
+make_level(load_texture('lev_ver_1'))   # generate the level
 
 camera.orthographic = True
-camera.position = (30/2,8)
-camera.fov = 500
+camera.position = (0, 0)
+camera.fov = 700
 
 
-player.position = (1676, 50)
+#camera.add_script(SmoothFollow(target=player, offset=[0, 5, -30],speed=4))
 player.traverse_target = level_parent
 enemy = Entity(model='cube', collider='box', color=color.red, position=(16,5,-.1))
 def update():
@@ -58,5 +59,5 @@ def update():
         print('die')
         player.position = player.start_position
 
-
+EditorCamera()
 app.run()
