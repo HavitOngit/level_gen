@@ -10,8 +10,8 @@ ground = Entity(model='quad', scale_x=10, collider='box', color=color.black)
 quad = load_model('quad', use_deepcopy=True)
 
 level_parent = Entity(model=Mesh(vertices=[], uvs=[]), texture='white_cube')
-bg = Entity(model='quad', position=(847, 599, 1), scale=(2090, 1236), texture='lev_1_ver_1color.png')
-
+bg = Entity(model='quad', position=(962, 545, 1), scale=(1950, 1080), texture='Level_1_final.png')
+#assat_layer = Entity( model='quad', position=(847, 599, -1), scale=(1920, 1080), texture='level_1_assate_fnl.png')
 def make_level(texture):
     # destroy every child of the level parent.
     # This doesn't do anything the first time the level is generated, but if we want to update it several times
@@ -44,7 +44,7 @@ def make_level(texture):
     print('cordinates are:\n', pos)
     level_parent.model.generate()
 
-make_level(load_texture('lev_ver_1'))   # generate the level
+make_level(load_texture('level_1_collider_f'))   # generate the level
 
 camera.orthographic = True
 camera.position = (0, 0)
@@ -66,8 +66,13 @@ def update():
         bg.x -=1
     if held_keys['6']:
         bg.x +=1
+    if held_keys['x']:
+        bg.scale_x +=10
+    if held_keys['z']:
+        bg.scale_x -=10
+     
 
-    print(bg.position)
-
+    
+    print(f'scale:{bg.scale}\nposition{bg.position}')
 EditorCamera()
 app.run()
