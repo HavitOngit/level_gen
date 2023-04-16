@@ -2,19 +2,6 @@ from ursina import *
 app = Ursina()
 
 from ursina.prefabs.platformer_controller_2d import PlatformerController2d
-player = PlatformerController2d(walk_speed=100, x=1000, y=1000, z=.01, scale_x=10, scale_y=10, max_jumps=10, jump_height=50, jump_duretion=1, color=(0, 0, 0, .10))
-anime_run = SpriteSheetAnimation('space-marine-run', tileset_size=(11, 1), fps=6, position=player.position, animations={
-    'run': ((0, 0), (10, 0)),})
-
-
-def input(key):
-    if key == 'd':
-        print('runing...')
-        anime_run.play_animation('run')
-
-ground = Entity(model='quad', scale_x=10, collider='box', color=color.black)
-
-
 quad = load_model('quad', use_deepcopy=True)
 
 level_parent = Entity(model=Mesh(vertices=[], uvs=[]), texture='white_cube')
@@ -58,43 +45,31 @@ camera.orthographic = True
 camera.position = (0, 0)
 camera.fov = 800
 
-loc_finder = Entity(model='cube', scale_x=10, scale_y=10, position=player.position, color=color.red)
-camera.add_script(SmoothFollow(target=player, offset=[0, 5, -30],speed=4))
-player.traverse_target = level_parent
-enemy = Entity(model='cube', collider='box', color=color.red, position=(16,5,-.1))
-
+loc_finder = Entity(model='cube', scale_x=10, scale_y=10, x=1000, y=1000,z=-2, color=color.red)
+camera.add_script(SmoothFollow(target=loc_finder, offset=[0, 5, -30],speed=4))
+#player.traverse_target = level_parent
+move_spd = 1
 def Pointer_Control():
+    global move_spd
     if held_keys['w']:
-        loc_finder.y +=1
+        loc_finder.y +=move_spd
     if held_keys['s']:
-        loc_finder.y -=1
+        loc_finder.y -=move_spd
     if held_keys['a']:
-        loc_finder.x -=1
+        loc_finder.x -=move_spd
     if held_keys['d']:
-        loc_finder.x +=1
+        loc_finder.x +=move_spd
     if held_keys['g']:
         print(loc_finder.position)
+    if held_keys['shift']:
+        move_spd = 10
+    else:
+        move_spd = 1
+
+
+
 def update():
-
-    if player.intersects(enemy).hit:
-        print('die')
-        player.position = player.start_position
-    if held_keys['8']:
-        bg.y +=1
-    if held_keys['2']:
-        bg.y -=1
-    if held_keys['4']:
-        bg.x -=1
-    if held_keys['6']:
-        bg.x +=1
-    if held_keys['x']:
-        bg.scale_x +=10
-    if held_keys['z']:
-        bg.scale_x -=10
-     
-
-    
-    print(f'scale:{bg.scale}\nposition{bg.position}')
+    Pointer_Control()
 
 EditorCamera()
 app.run()
